@@ -1,0 +1,2301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoFactory Hub — IU29 Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@600;700;800&display=swap');
+
+    :root {
+      --bg: #0a1628;
+      --surface: #112240;
+      --surface-2: #162f57;
+      --surface-3: #1b3d70;
+      --text: #eaf2ff;
+      --muted: #9fb3d9;
+      --green: #00e676;
+      --amber: #ffab00;
+      --purple: #b39ddb;
+      --danger: #ff5e7e;
+      --maroon: #7a1236;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+      --radius: 22px;
+      --points-glow: 0 0 16px rgba(0, 230, 118, 0.25);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(179,157,219,0.10), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(0,230,118,0.12), transparent 28%),
+        linear-gradient(180deg, #081221 0%, #0a1628 100%);
+      overflow-x: hidden;
+    }
+
+    body.prelaunch {
+      overflow: hidden;
+    }
+
+    .app {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .launch-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(0,230,118,0.12), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(179,157,219,0.16), transparent 30%),
+        linear-gradient(180deg, rgba(5,12,24,0.98), rgba(10,22,40,0.98));
+    }
+
+    .launch-card {
+      width: min(920px, 100%);
+      background: linear-gradient(180deg, rgba(17,34,64,0.98), rgba(14,29,55,0.98));
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.42);
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .launch-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .launch-brand img {
+      width: clamp(90px, 12vw, 130px);
+      height: auto;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.95);
+      padding: 8px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.28);
+      flex-shrink: 0;
+    }
+
+    .launch-title {
+      margin: 0;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      line-height: 1;
+    }
+
+    .launch-subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 34ch;
+    }
+
+    .launch-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .launch-side {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 20px;
+    }
+
+    .launch-side h3 {
+      margin: 0 0 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem;
+    }
+
+    .launch-side p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .launch-input {
+      width: 100%;
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .launch-input:focus {
+      outline: none;
+      border-color: rgba(0,230,118,0.45);
+      box-shadow: var(--points-glow);
+    }
+
+    .launch-helper {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .top-shell {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(10,22,40,0.95), rgba(10,22,40,0.82));
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1 1 420px;
+      min-width: 280px;
+    }
+
+    .brand-logo {
+      width: clamp(96px, 10vw, 128px);
+      height: auto;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.94);
+      padding: 8px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+      flex-shrink: 0;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      letter-spacing: 0.02em;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      max-width: 60ch;
+    }
+
+    .top-right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1 1 720px;
+      min-width: 300px;
+    }
+
+    .identity-row {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.6fr) repeat(3, minmax(110px, 0.7fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .entry-card {
+      background: rgba(17,34,64,0.92);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      min-height: 76px;
+    }
+
+    .entry-card .label,
+    .score-card .label,
+    .metric-card .label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .entry-name {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+    }
+
+    .entry-name:focus {
+      outline: none;
+      border-color: rgba(0,230,118,0.45);
+      box-shadow: var(--points-glow);
+    }
+
+    .timer-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.55rem;
+      margin-top: 6px;
+    }
+
+    .timer-value.warning { color: var(--amber); }
+    .timer-value.danger { color: var(--danger); }
+
+    .mini-stack {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .mini-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .scorebar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
+
+    .score-card {
+      background: rgba(17,34,64,0.92);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      min-height: 76px;
+    }
+
+    .score-card .value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      margin-top: 4px;
+    }
+
+    .score-card.rank {
+      border-color: rgba(0,230,118,0.35);
+      box-shadow: var(--points-glow), var(--shadow);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(17,34,64,0.9);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.97rem;
+      white-space: nowrap;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .tab-btn:hover,
+    .tab-btn:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(0,230,118,0.45);
+      outline: none;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(0,230,118,0.16), rgba(179,157,219,0.12));
+      border-color: rgba(0,230,118,0.55);
+      box-shadow: var(--points-glow);
+    }
+
+    .content { margin-top: 18px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .card {
+      background: linear-gradient(180deg, rgba(17,34,64,0.98), rgba(14,29,55,0.97));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.35rem, 2.3vw, 2rem);
+    }
+
+    .panel-sub {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .btn,
+    button.option-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease, filter 0.18s ease;
+    }
+
+    .btn:hover,
+    button.option-btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green), #00c766);
+      color: #052112;
+      box-shadow: var(--points-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .btn-amber {
+      background: linear-gradient(135deg, var(--amber), #ff8f00);
+      color: #221500;
+    }
+
+    .btn-purple {
+      background: linear-gradient(135deg, var(--purple), #9b8ad1);
+      color: #130d22;
+    }
+
+    .btn-maroon {
+      background: linear-gradient(135deg, #8b1e44, #6b0f2f);
+      color: #fff5f9;
+    }
+
+    .mini-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.92rem;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.18);
+      background: transparent;
+    }
+
+    .dot.done { background: var(--green); border-color: var(--green); }
+    .dot.current { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 14px rgba(255,171,0,0.35); }
+
+    .question-card,
+    .scramble-box,
+    .lab-box {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .question-title,
+    .lab-question {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.2rem, 2vw, 1.55rem);
+      margin: 0 0 16px;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .option-btn {
+      text-align: left;
+      background: rgba(255,255,255,0.055);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 14px 16px;
+    }
+
+    .option-btn.correct {
+      background: rgba(0,230,118,0.16);
+      border-color: rgba(0,230,118,0.52);
+      color: #d6ffe7;
+    }
+
+    .option-btn.wrong {
+      background: rgba(255,94,126,0.16);
+      border-color: rgba(255,94,126,0.5);
+    }
+
+    .option-btn.dimmed {
+      opacity: 0.72;
+    }
+
+    .feedback {
+      min-height: 76px;
+      color: var(--text);
+      background: rgba(255,255,255,0.035);
+      border-radius: 18px;
+      padding: 14px;
+      border-left: 4px solid var(--purple);
+    }
+
+    .feedback.good { border-left-color: var(--green); }
+    .feedback.warn { border-left-color: var(--amber); }
+
+    .question-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .scramble-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    .hint-box {
+      background: rgba(179,157,219,0.09);
+      border: 1px solid rgba(179,157,219,0.22);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .scrambled-word {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      letter-spacing: 0.18em;
+      color: var(--amber);
+      margin: 12px 0 20px;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .answer-input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 16px;
+      padding: 15px 16px;
+      font: inherit;
+      font-size: 1rem;
+      text-transform: uppercase;
+    }
+
+    .answer-input:focus {
+      outline: none;
+      border-color: rgba(0,230,118,0.5);
+      box-shadow: var(--points-glow);
+    }
+
+    .side-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      height: 100%;
+    }
+
+    .small-list {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+    }
+
+    .small-list strong { color: var(--text); }
+
+    .wordsearch-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 480px) 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .grid-wrap {
+      background: rgba(255,255,255,0.035);
+      padding: 12px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      touch-action: none;
+      user-select: none;
+    }
+
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4px;
+      aspect-ratio: 1 / 1;
+    }
+
+    .grid-cell {
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      font-weight: 700;
+      font-size: clamp(0.85rem, 1.45vw, 1.05rem);
+      min-height: 30px;
+      transition: background 0.12s ease, transform 0.12s ease;
+    }
+
+    .grid-cell.preview {
+      background: rgba(255,171,0,0.28);
+      transform: scale(1.03);
+    }
+
+    .grid-cell.found {
+      background: rgba(0,230,118,0.22);
+      border: 1px solid rgba(0,230,118,0.5);
+    }
+
+    .words-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .word-pill {
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .word-pill.done {
+      background: rgba(0,230,118,0.16);
+      color: #d6ffe7;
+      text-decoration: line-through;
+      border-color: rgba(0,230,118,0.45);
+    }
+
+    .memory-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .memory-card {
+      perspective: 1000px;
+      aspect-ratio: 1 / 1;
+      cursor: pointer;
+    }
+
+    .memory-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.55s ease;
+    }
+
+    .memory-card.flipped .memory-inner,
+    .memory-card.matched .memory-inner {
+      transform: rotateY(180deg);
+    }
+
+    .memory-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow);
+    }
+
+    .memory-front {
+      background: linear-gradient(135deg, rgba(179,157,219,0.22), rgba(17,34,64,0.95));
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+    }
+
+    .memory-back {
+      background: rgba(255,255,255,0.07);
+      transform: rotateY(180deg);
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .memory-back strong {
+      font-family: 'Syne', sans-serif;
+      color: var(--green);
+      font-size: 1.05rem;
+    }
+
+    .lab-progress {
+      height: 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .lab-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--green), var(--amber), var(--purple));
+      transition: width 0.35s ease;
+    }
+
+    .challenge-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .challenge-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 20px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left-width: 6px;
+    }
+
+    .challenge-card h3 {
+      margin: 0 0 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+    }
+
+    .challenge-card p {
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+
+    .insight {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      display: none;
+    }
+
+    .insight.show { display: block; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .metric-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 20px;
+    }
+
+    .metric-card .metric-value {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: var(--green);
+      margin-top: 8px;
+    }
+
+    .rank-panel {
+      background: linear-gradient(135deg, rgba(0,230,118,0.12), rgba(179,157,219,0.12));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .rank-panel h3 {
+      margin: 0 0 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+    }
+
+    .leaderboard-wrap {
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+    }
+
+    .leaderboard-table th {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .leaderboard-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .leaderboard-table .place {
+      font-family: 'Syne', sans-serif;
+      color: var(--amber);
+      width: 52px;
+    }
+
+    .leaderboard-empty {
+      color: var(--muted);
+      padding: 10px 0 2px;
+    }
+
+    .muted { color: var(--muted); }
+    .hidden { display: none !important; }
+    .center { text-align: center; }
+
+    @media (max-width: 1120px) {
+      .identity-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .scorebar {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+    }
+
+    @media (max-width: 980px) {
+      .scramble-layout,
+      .wordsearch-layout {
+        grid-template-columns: 1fr;
+      }
+      .challenge-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .launch-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app { padding: 12px; }
+      .memory-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+      .score-card .value { font-size: 1.35rem; }
+      .grid-cell { min-height: 24px; }
+      .identity-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .memory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .brand-row { align-items: stretch; }
+      .scorebar { grid-template-columns: 1fr 1fr; }
+      .tab-btn { padding: 11px 14px; font-size: 0.92rem; }
+      .card { padding: 16px; }
+      .launch-brand {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body class="prelaunch">
+  <div class="launch-overlay" id="launchOverlay">
+    <div class="launch-card">
+      <div>
+        <div class="launch-brand">
+          <img src="data:image/png;base64,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" alt="IU29 logo" />
+          <div>
+            <h1 class="launch-title">EcoFactory Hub</h1>
+            <p class="launch-subtitle">Mission-control mode for IU29 builders. Enter a team name, launch the session, and turn downtime into points.</p>
+          </div>
+        </div>
+        <div class="launch-badges">
+          <div class="pill">Arcade-style STEM station</div>
+          <div class="pill">15-minute mission timer</div>
+          <div class="pill">Live session leaderboard</div>
+        </div>
+      </div>
+
+      <div class="launch-side">
+        <h3>Start Mission</h3>
+        <p>Enter a student or team name, then launch the station. The timer begins right away so it feels like a real challenge run.</p>
+        <input id="launchNameInput" class="launch-input" type="text" maxlength="24" placeholder="Enter a team or student name" />
+        <div class="mini-row">
+          <button class="btn btn-primary" id="launchStartBtn">Launch Mission</button>
+          <button class="btn btn-secondary" id="launchQuickBtn">Quick Start</button>
+        </div>
+        <div class="launch-helper">Quick Start uses “Anonymous Builder.” Because sometimes chaos arrives before names do.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="top-shell">
+    <div class="app">
+      <div class="brand-row">
+        <div class="brand">
+          <img class="brand-logo" src="data:image/png;base64,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" alt="IU29 logo" />
+          <div>
+            <h1>EcoFactory Hub</h1>
+            <p>IU29 student activity station for the 2026 STEM Design Challenge — built for downtime between finishing a model and facing the judges.</p>
+          </div>
+        </div>
+
+        <div class="top-right">
+          <div class="identity-row">
+            <div class="entry-card">
+              <div class="label">Player / Team Name</div>
+              <input id="playerNameInput" class="entry-name" type="text" maxlength="24" placeholder="Enter a team or student name" />
+            </div>
+            <div class="entry-card mini-stack">
+              <div class="label">Timer</div>
+              <div class="timer-value" id="timerDisplay">15:00</div>
+            </div>
+            <div class="entry-card mini-stack">
+              <div class="label">Session Rank</div>
+              <div class="timer-value" id="sessionRankDisplay">Apprentice Engineer</div>
+            </div>
+            <div class="entry-card mini-stack">
+              <div class="label">Leaderboard</div>
+              <div class="timer-value" id="leaderboardCount">0</div>
+            </div>
+          </div>
+
+          <div class="mini-buttons">
+            <button class="btn btn-primary" id="timerStartBtn">Start Timer</button>
+            <button class="btn btn-secondary" id="timerPauseBtn">Pause</button>
+            <button class="btn btn-amber" id="timerResetBtn">Reset 15:00</button>
+            <button class="btn btn-maroon" id="saveScoreBtn">Save to Leaderboard</button>
+            <button class="btn btn-purple" id="newPlayerBtn">New Player</button>
+          </div>
+
+          <div class="scorebar">
+            <div class="score-card">
+              <div class="label">Total Points</div>
+              <div class="value" id="scorePoints">0</div>
+            </div>
+            <div class="score-card">
+              <div class="label">Current Streak</div>
+              <div class="value" id="scoreStreak">0</div>
+            </div>
+            <div class="score-card">
+              <div class="label">Correct Answers</div>
+              <div class="value" id="scoreCorrect">0</div>
+            </div>
+            <div class="score-card rank">
+              <div class="label">Current Rank</div>
+              <div class="value" id="scoreRank">Apprentice Engineer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs" id="tabBar">
+        <button class="tab-btn active" data-tab="trivia">Trivia</button>
+        <button class="tab-btn" data-tab="scramble">Word Scramble</button>
+        <button class="tab-btn" data-tab="wordsearch">Word Search</button>
+        <button class="tab-btn" data-tab="memory">Memory Match</button>
+        <button class="tab-btn" data-tab="designlab">Design Lab</button>
+        <button class="tab-btn" data-tab="challenges">Challenges</button>
+        <button class="tab-btn" data-tab="stats">Stats</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="app content">
+    <section class="tab-panel active" id="tab-trivia">
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">STEM Trivia</h2>
+            <p class="panel-sub">Challenge-themed questions tied to sustainability, design process thinking, and responsible production.</p>
+          </div>
+          <div class="pill" id="triviaStatus">Question 1 of 10</div>
+        </div>
+        <div class="progress-dots" id="triviaDots"></div>
+        <div class="question-card">
+          <h3 class="question-title" id="triviaQuestion"></h3>
+          <div class="options" id="triviaOptions"></div>
+          <div class="feedback" id="triviaFeedback">Choose an answer to see the engineering explanation.</div>
+          <div class="question-nav">
+            <div class="pill" id="triviaPointsHint">Base points: 15</div>
+            <div class="mini-row">
+              <button class="btn btn-secondary hidden" id="triviaNextBtn">Next Question</button>
+              <button class="btn btn-primary hidden" id="triviaReplayBtn">Play Again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-scramble">
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Word Scramble</h2>
+            <p class="panel-sub">Unscramble challenge vocabulary. Your neurons are now on shift.</p>
+          </div>
+          <div class="pill" id="scrambleCounter">Word 1 of 8</div>
+        </div>
+        <div class="scramble-layout">
+          <div class="scramble-box">
+            <div class="hint-box">
+              <div class="label muted">Hint</div>
+              <div id="scrambleHint">A way of creating things that can last long-term without harming resources.</div>
+            </div>
+            <div class="scrambled-word" id="scrambledWord">LUSTANABSIE</div>
+            <input class="answer-input" id="scrambleInput" autocomplete="off" spellcheck="false" placeholder="TYPE YOUR ANSWER" />
+            <div class="mini-row" style="margin-top: 14px;">
+              <button class="btn btn-primary" id="scrambleCheckBtn">Check</button>
+              <button class="btn btn-secondary" id="scrambleSkipBtn">Skip</button>
+              <button class="btn btn-amber" id="scrambleRevealBtn">Reveal</button>
+              <button class="btn btn-purple" id="scrambleNextBtn">Next</button>
+            </div>
+            <div class="feedback" id="scrambleFeedback" style="margin-top: 14px;">Type your best guess and hit Check.</div>
+          </div>
+          <div class="side-card">
+            <h3 style="margin-top:0; font-family:'Syne',sans-serif;">Word Bank Rotation</h3>
+            <div class="small-list" id="scrambleList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-wordsearch">
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Word Search</h2>
+            <p class="panel-sub">Drag across the grid to capture hidden engineering words in any direction.</p>
+          </div>
+          <div class="mini-row">
+            <div class="pill" id="wordsearchFoundCount">Found 0 of 8</div>
+            <button class="btn btn-primary" id="newPuzzleBtn">New Puzzle</button>
+          </div>
+        </div>
+        <div class="wordsearch-layout">
+          <div>
+            <div class="grid-wrap" id="gridWrap">
+              <div class="word-grid" id="wordGrid"></div>
+            </div>
+            <div class="feedback" id="wordsearchFeedback" style="margin-top: 14px;">Drag across letters to trace a word.</div>
+          </div>
+          <div class="side-card">
+            <h3 style="margin-top:0; font-family:'Syne',sans-serif;">Target Words</h3>
+            <p class="muted">Words may be forward, backward, diagonal, or vertical. The grid enjoys being difficult on purpose.</p>
+            <div class="words-list" id="wordList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-memory">
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Memory Match</h2>
+            <p class="panel-sub">Flip cards to pair STEM terms with their matching definitions.</p>
+          </div>
+          <button class="btn btn-primary" id="memoryRestartBtn">Shuffle &amp; Restart</button>
+        </div>
+        <div class="memory-top">
+          <div class="pill" id="memoryMoves">Moves: 0</div>
+          <div class="pill" id="memoryMatched">Matched Pairs: 0 / 8</div>
+        </div>
+        <div class="memory-grid" id="memoryGrid"></div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-designlab">
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Design Lab</h2>
+            <p class="panel-sub">Walk through the Engineering Design Process using an Eco-Factory packaging scenario.</p>
+          </div>
+          <div class="pill" id="labStepLabel">Step 1 of 6</div>
+        </div>
+        <div class="lab-progress"><div class="lab-progress-fill" id="labProgressFill"></div></div>
+        <div class="lab-box">
+          <div class="pill" id="labStepName" style="display:inline-flex; margin-bottom: 12px;">Define the Problem</div>
+          <h3 class="lab-question" id="labQuestion"></h3>
+          <div class="options" id="labOptions"></div>
+          <div class="feedback" id="labFeedback">Pick the most engineer-minded next move.</div>
+          <div class="question-nav">
+            <div class="pill">+20 points for strong design thinking</div>
+            <div class="mini-row">
+              <button class="btn btn-secondary hidden" id="labNextBtn">Next Step</button>
+              <button class="btn btn-primary hidden" id="labReplayBtn">Run It Again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-challenges">
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Offline Challenges</h2>
+            <p class="panel-sub">Mini prompts to keep brains moving while hands wait for the judges to arrive.</p>
+          </div>
+          <div class="pill">+5 points each time you reveal the engineering insight</div>
+        </div>
+        <div class="challenge-grid" id="challengeGrid"></div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-stats">
+      <div class="card">
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Stats Dashboard</h2>
+            <p class="panel-sub">Track your run through the hub and see where you land on the session leaderboard.</p>
+          </div>
+          <div class="pill" id="statsRankMini">Rank: Apprentice Engineer</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="metric-card">
+            <div class="label">Total Points</div>
+            <div class="metric-value" id="statPoints">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">Correct Answers</div>
+            <div class="metric-value" id="statCorrect">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">Best Streak</div>
+            <div class="metric-value" id="statBestStreak">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">Words Solved</div>
+            <div class="metric-value" id="statWordsSolved">0</div>
+          </div>
+        </div>
+
+        <div class="rank-panel">
+          <h3 id="statsRankTitle">Apprentice Engineer</h3>
+          <p class="muted" id="statsRankFlavor">You are just stepping onto the factory floor. Curiosity is your starter tool kit.</p>
+        </div>
+
+        <div class="leaderboard-wrap">
+          <div class="panel-head" style="margin-bottom: 8px;">
+            <div>
+              <h3 class="panel-title" style="font-size:1.3rem;">Session Leaderboard</h3>
+              <p class="panel-sub">This stays live while the page is open. Save each player or team when they finish.</p>
+            </div>
+            <button class="btn btn-secondary" id="clearLeaderboardBtn">Clear Leaderboard</button>
+          </div>
+          <div id="leaderboardArea"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      points: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      correctAnswers: 0,
+      wordsSolved: 0,
+      revealedInsights: new Set(),
+      memoryBonusAwarded: false,
+      leaderboard: [],
+      timerSeconds: 900,
+      timerDefault: 900,
+      timerRunning: false,
+      timerId: null
+    };
+
+    const rankTiers = [
+      { min: 0, name: 'Apprentice Engineer', flavor: 'You are just stepping onto the factory floor. Curiosity is your starter tool kit.' },
+      { min: 50, name: 'Junior Inventor', flavor: 'You are building confidence, spotting patterns, and asking sharper questions.' },
+      { min: 100, name: 'Design Thinker', flavor: 'You connect ideas with purpose and start treating problems like design opportunities.' },
+      { min: 200, name: 'Eco-Factory Specialist', flavor: 'You think about systems, waste, materials, and smarter ways to make things work.' },
+      { min: 350, name: 'Master Prototyper', flavor: 'You test boldly, revise quickly, and turn rough ideas into useful solutions.' },
+      { min: 500, name: 'Sustainability Champion', flavor: 'You are redesigning the future with creativity, responsibility, and serious builder energy.' }
+    ];
+
+    const triviaQuestions = [
+      {
+        q: 'The 2026 STEM Design Challenge asks teams to build what kind of machine prototype?',
+        options: ['A weather station', 'A sustainable production machine section for a factory', 'A robot pet', 'A space elevator'],
+        answer: 1,
+        explanation: 'The challenge centers on an Eco-Factory concept where students design a section of a factory that produces a product using sustainable practices.'
+      },
+      {
+        q: 'Which idea best matches sustainability in engineering?',
+        options: ['Making something fast no matter the waste', 'Designing solutions that meet needs without using up future resources', 'Using only expensive materials', 'Building the biggest product possible'],
+        answer: 1,
+        explanation: 'Sustainability means meeting today\'s needs while protecting resources and systems for the future. Good engineering balances performance, materials, energy, and long-term impact.'
+      },
+      {
+        q: 'What is usually the first step in the Engineering Design Process?',
+        options: ['Sell the product', 'Test random materials', 'Define the problem', 'Decorate the final model'],
+        answer: 2,
+        explanation: 'Engineers begin by clearly identifying the problem, the users, and the goal. Without that, even a clever solution can solve the wrong thing.'
+      },
+      {
+        q: 'SDG 12 focuses on which big idea?',
+        options: ['Life below water', 'Responsible consumption and production', 'Quality education only', 'Affordable housing'],
+        answer: 1,
+        explanation: 'SDG 12 is about using resources responsibly, reducing waste, and improving production systems. It asks us to think about what we make and what it costs the planet.'
+      },
+      {
+        q: 'Why do engineers build prototypes?',
+        options: ['To make the final product perfect immediately', 'To avoid testing', 'To explore and improve an idea before the final version', 'To use the most materials possible'],
+        answer: 2,
+        explanation: 'A prototype is an early model used to test ideas. It helps teams learn what works, what fails, and what should change before spending more time or materials.'
+      },
+      {
+        q: 'Which of these is a design constraint?',
+        options: ['A wish for the design to be fun', 'The team\'s favorite color', 'A limit like budget, size, time, or materials', 'A random guess'],
+        answer: 2,
+        explanation: 'Constraints are real limits engineers must work within. They shape decisions and force creative trade-offs.'
+      },
+      {
+        q: 'Which energy source is renewable?',
+        options: ['Coal', 'Solar', 'Oil', 'Natural gas'],
+        answer: 1,
+        explanation: 'Solar energy is renewable because sunlight is naturally replenished. Fossil fuels take millions of years to form and are not replaced on a human timescale.'
+      },
+      {
+        q: 'How much presentation time should each team prepare for the competition?',
+        options: ['30 seconds or less', '2 minutes or less', '5 minutes', '10 minutes'],
+        answer: 1,
+        explanation: 'The challenge calls for a short presentation so students communicate clearly and efficiently about their model and how it answers the prompt.'
+      },
+      {
+        q: 'Why is testing important in a design challenge?',
+        options: ['It proves the first idea is always best', 'It helps teams collect evidence and improve performance', 'It is only for decoration', 'It replaces teamwork'],
+        answer: 1,
+        explanation: 'Testing gives data. Instead of guessing, teams can use evidence to improve strength, stability, efficiency, or user experience.'
+      },
+      {
+        q: 'Which team habit best supports successful prototyping?',
+        options: ['Ignoring feedback', 'Keeping one idea forever', 'Sharing ideas, observing results, and revising together', 'Choosing the easiest answer without discussion'],
+        answer: 2,
+        explanation: 'Strong prototypes come from collaboration and revision. Teams that listen, observe, and adapt usually create better solutions.'
+      }
+    ];
+
+    const scrambleWords = [
+      { word: 'SUSTAINABLE', hint: 'Able to continue long-term without harming resources or systems.' },
+      { word: 'PROTOTYPE', hint: 'An early model used to test an idea.' },
+      { word: 'BLUEPRINT', hint: 'A technical plan or drawing for a build.' },
+      { word: 'RECYCLING', hint: 'Processing used materials so they can be used again.' },
+      { word: 'EFFICIENCY', hint: 'Getting strong results with minimal wasted time, energy, or materials.' },
+      { word: 'RENEWABLE', hint: 'A resource that can be naturally replaced.' },
+      { word: 'TEAMWORK', hint: 'People combining skills and effort toward a shared goal.' },
+      { word: 'ENGINEER', hint: 'A person who designs, tests, and improves solutions.' }
+    ];
+
+    const wordSearchWords = ['DESIGN', 'FACTORY', 'RECYCLE', 'ENERGY', 'MACHINE', 'BUILD', 'PROTOTYPE', 'WASTE'];
+
+    const memoryPairs = [
+      ['PROTOTYPE', 'Early test model'],
+      ['BLUEPRINT', 'Technical drawing'],
+      ['CONSTRAINT', 'Design limitation'],
+      ['EFFICIENCY', 'Max output min waste'],
+      ['RENEWABLE', 'Replenishes naturally'],
+      ['ITERATION', 'Repeat and improve'],
+      ['CRITERIA', 'Success standards'],
+      ['SUSTAINABLE', 'Long-term viable']
+    ];
+
+    const designLabSteps = [
+      {
+        step: 'Define the Problem',
+        question: 'Your school wants art supply packaging to be more sustainable. What is the best way to define the problem?',
+        options: [
+          'Make the package look cooler with bright glitter',
+          'State that the package should use less waste, still protect supplies, and be practical for students and teachers',
+          'Start building something immediately without asking questions',
+          'Choose the cheapest material no matter what happens'
+        ],
+        answer: 1,
+        explanation: 'A strong problem statement names the goal, the users, and the key constraints. Engineers do better work when the challenge is specific and measurable, not just vague or flashy.'
+      },
+      {
+        step: 'Background Research',
+        question: 'What research would help the team most before redesigning the package?',
+        options: [
+          'Find out what materials are recyclable, how current packaging fails, and what users actually need',
+          'Only ask which color students like best',
+          'Skip research because ideas should be instant',
+          'Copy the first package you see online'
+        ],
+        answer: 0,
+        explanation: 'Research helps teams avoid guessing. By studying materials, user needs, and current problems, engineers build solutions that are grounded in evidence instead of assumptions.'
+      },
+      {
+        step: 'Brainstorm',
+        question: 'During brainstorming, what approach is strongest?',
+        options: [
+          'Pick one idea right away and shut down the rest',
+          'Generate lots of possibilities, including unusual ones, before choosing the best direction',
+          'Only listen to the loudest teammate',
+          'Avoid sketching or sharing because it wastes time'
+        ],
+        answer: 1,
+        explanation: 'Brainstorming is about variety before judgment. Teams usually discover stronger options when they explore many ideas first, then narrow them with criteria and constraints.'
+      },
+      {
+        step: 'Prototype',
+        question: 'What makes the best first prototype for the package redesign?',
+        options: [
+          'A quick model using simple materials that helps test shape, strength, and how much material is used',
+          'A final expensive version made before any testing',
+          'No model at all, just confidence',
+          'A design that looks nice but cannot actually hold supplies'
+        ],
+        answer: 0,
+        explanation: 'A prototype should be quick, useful, and testable. It is not about perfection; it is about learning with minimal waste and maximum feedback.'
+      },
+      {
+        step: 'Test & Evaluate',
+        question: 'How should the team test its new package?',
+        options: [
+          'Only ask friends to say it is awesome',
+          'Try real use cases like carrying supplies, dropping the package, and comparing waste with the original',
+          'Avoid measuring anything',
+          'Test it once and ignore what happens'
+        ],
+        answer: 1,
+        explanation: 'Testing should connect to the problem and criteria. Real evidence, repeated trials, and comparison data help teams decide whether the redesign truly improves sustainability and performance.'
+      },
+      {
+        step: 'Communicate Results',
+        question: 'What should the team include when presenting its final design?',
+        options: [
+          'Only a dramatic slogan',
+          'The final package without any explanation',
+          'The problem, research, design choices, test results, and how the solution improves sustainability',
+          'A list of random facts not connected to the project'
+        ],
+        answer: 2,
+        explanation: 'Communication is part of engineering. Teams need to explain their reasoning and evidence so others can understand the design, evaluate it, and improve it further.'
+      }
+    ];
+
+    const challenges = [
+      {
+        title: '10-Piece Structure Challenge',
+        prompt: 'Using only 10 building pieces or classroom objects, sketch or describe the tallest stable structure you could make.',
+        insight: 'This challenge focuses on constraints, structural stability, and trade-offs. Less material forces more intentional design.',
+        color: 'var(--green)'
+      },
+      {
+        title: 'Waste Audit',
+        prompt: 'Look around your team area. What materials might become waste, and how could they be reduced, reused, or reorganized?',
+        insight: 'This builds systems thinking around material flow and sustainability. Engineers look at waste as a design problem, not just a cleanup issue.',
+        color: 'var(--amber)'
+      },
+      {
+        title: 'Name That Machine',
+        prompt: 'Think of a machine you use every day. What simple parts or systems make it work?',
+        insight: 'The hidden concept is decomposition. Complex machines can be understood as smaller systems working together.',
+        color: 'var(--purple)'
+      },
+      {
+        title: '2-Minute Pitch Practice',
+        prompt: 'Pretend a judge asks why your design matters. Give a short pitch explaining the problem, solution, and what makes it smart.',
+        insight: 'Engineering is not just building. It also involves communication, evidence, and making a clear case for your choices.',
+        color: 'var(--green)'
+      },
+      {
+        title: 'What If Redesign',
+        prompt: 'Pick any everyday item and imagine one change that would make it safer, greener, or easier to use.',
+        insight: 'This is iterative redesign. Engineers improve existing systems by spotting pain points and imagining better versions.',
+        color: 'var(--amber)'
+      },
+      {
+        title: 'Spot the Sustainability',
+        prompt: 'Name one design choice in your project that saves material, energy, time, or waste.',
+        insight: 'This challenge highlights efficiency and intentionality. Sustainable design often comes from small smart decisions, not giant dramatic overhauls.',
+        color: 'var(--purple)'
+      }
+    ];
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        tabs.forEach(t => t.classList.toggle('active', t === btn));
+        panels.forEach(panel => panel.classList.toggle('active', panel.id === `tab-${target}`));
+      });
+    });
+
+    function getCurrentRank() {
+      let current = rankTiers[0];
+      for (const tier of rankTiers) {
+        if (state.points >= tier.min) current = tier;
+      }
+      return current;
+    }
+
+    function addPoints(points) {
+      state.points += points;
+      updateScoreboard();
+    }
+
+    function incrementCorrect() {
+      state.correctAnswers += 1;
+      updateScoreboard();
+    }
+
+    function setStreak(value) {
+      state.currentStreak = value;
+      if (value > state.bestStreak) state.bestStreak = value;
+      updateScoreboard();
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById('timerDisplay');
+      timerEl.textContent = formatTime(state.timerSeconds);
+      timerEl.classList.remove('warning', 'danger');
+      if (state.timerSeconds <= 60) timerEl.classList.add('danger');
+      else if (state.timerSeconds <= 180) timerEl.classList.add('warning');
+    }
+
+    function startTimer() {
+      if (state.timerRunning) return;
+      state.timerRunning = true;
+      state.timerId = setInterval(() => {
+        if (state.timerSeconds > 0) {
+          state.timerSeconds -= 1;
+          updateTimerDisplay();
+        } else {
+          pauseTimer();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      state.timerRunning = false;
+      if (state.timerId) clearInterval(state.timerId);
+      state.timerId = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      state.timerSeconds = state.timerDefault;
+      updateTimerDisplay();
+    }
+
+    function getSafePlayerName() {
+      const value = document.getElementById('playerNameInput').value.trim();
+      return value || 'Anonymous Builder';
+    }
+
+    function saveToLeaderboard() {
+      const playerName = getSafePlayerName();
+      const existingIndex = state.leaderboard.findIndex(item => item.name.toLowerCase() === playerName.toLowerCase());
+
+      const entry = {
+        name: playerName,
+        points: state.points,
+        correct: state.correctAnswers,
+        streak: state.bestStreak,
+        words: state.wordsSolved,
+        timeLeft: state.timerSeconds,
+        rank: getCurrentRank().name
+      };
+
+      if (existingIndex >= 0) {
+        const existing = state.leaderboard[existingIndex];
+        if (entry.points >= existing.points) {
+          state.leaderboard[existingIndex] = entry;
+        }
+      } else {
+        state.leaderboard.push(entry);
+      }
+
+      state.leaderboard.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.correct !== a.correct) return b.correct - a.correct;
+        return b.timeLeft - a.timeLeft;
+      });
+
+      if (state.leaderboard.length > 10) state.leaderboard = state.leaderboard.slice(0, 10);
+      updateScoreboard();
+    }
+
+    function renderLeaderboard() {
+      const area = document.getElementById('leaderboardArea');
+      if (!state.leaderboard.length) {
+        area.innerHTML = '<div class="leaderboard-empty">No scores saved yet. Finish a run and hit <strong>Save to Leaderboard</strong>.</div>';
+        return;
+      }
+
+      const rows = state.leaderboard.map((item, index) => `
+        <tr>
+          <td class="place">#${index + 1}</td>
+          <td>${item.name}</td>
+          <td>${item.points}</td>
+          <td>${item.rank}</td>
+          <td>${item.correct}</td>
+          <td>${formatTime(item.timeLeft)}</td>
+        </tr>
+      `).join('');
+
+      area.innerHTML = `
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Place</th>
+              <th>Name</th>
+              <th>Points</th>
+              <th>Rank</th>
+              <th>Correct</th>
+              <th>Time Left</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function updateScoreboard() {
+      const rank = getCurrentRank();
+      document.getElementById('scorePoints').textContent = state.points;
+      document.getElementById('scoreStreak').textContent = state.currentStreak;
+      document.getElementById('scoreCorrect').textContent = state.correctAnswers;
+      document.getElementById('scoreRank').textContent = rank.name;
+      document.getElementById('sessionRankDisplay').textContent = rank.name;
+
+      document.getElementById('statPoints').textContent = state.points;
+      document.getElementById('statCorrect').textContent = state.correctAnswers;
+      document.getElementById('statBestStreak').textContent = state.bestStreak;
+      document.getElementById('statWordsSolved').textContent = state.wordsSolved;
+      document.getElementById('statsRankMini').textContent = `Rank: ${rank.name}`;
+      document.getElementById('statsRankTitle').textContent = rank.name;
+      document.getElementById('statsRankFlavor').textContent = rank.flavor;
+      document.getElementById('leaderboardCount').textContent = state.leaderboard.length;
+      renderLeaderboard();
+    }
+
+    function resetSessionState() {
+      state.points = 0;
+      state.currentStreak = 0;
+      state.bestStreak = 0;
+      state.correctAnswers = 0;
+      state.wordsSolved = 0;
+      state.revealedInsights = new Set();
+      state.memoryBonusAwarded = false;
+      resetTimer();
+
+      trivia.current = 0;
+      trivia.answered = false;
+      trivia.completed = Array(triviaQuestions.length).fill(false);
+
+      scramble.index = 0;
+      scramble.solvedCurrent = false;
+
+      lab.index = 0;
+      lab.answered = false;
+      lab.done = false;
+
+      renderTrivia();
+      renderScramble();
+      generateWordSearch();
+      resetMemory();
+      renderLab();
+      renderChallenges();
+      updateScoreboard();
+    }
+
+    document.getElementById('timerStartBtn').addEventListener('click', startTimer);
+    document.getElementById('timerPauseBtn').addEventListener('click', pauseTimer);
+    document.getElementById('timerResetBtn').addEventListener('click', resetTimer);
+    document.getElementById('saveScoreBtn').addEventListener('click', saveToLeaderboard);
+    document.getElementById('clearLeaderboardBtn').addEventListener('click', () => {
+      state.leaderboard = [];
+      updateScoreboard();
+    });
+    document.getElementById('newPlayerBtn').addEventListener('click', () => {
+      pauseTimer();
+      document.getElementById('playerNameInput').value = '';
+      document.getElementById('launchNameInput').value = '';
+      document.getElementById('launchOverlay').style.display = 'flex';
+      document.body.classList.add('prelaunch');
+      resetSessionState();
+    });
+
+    // Trivia
+    const trivia = {
+      current: 0,
+      answered: false,
+      completed: Array(triviaQuestions.length).fill(false)
+    };
+
+    function renderTriviaDots() {
+      const dots = document.getElementById('triviaDots');
+      dots.innerHTML = '';
+      triviaQuestions.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        if (trivia.completed[index]) dot.classList.add('done');
+        if (index === trivia.current && !allTriviaDone()) dot.classList.add('current');
+        dots.appendChild(dot);
+      });
+    }
+
+    function allTriviaDone() {
+      return trivia.completed.every(Boolean);
+    }
+
+    function renderTrivia() {
+      const questionEl = document.getElementById('triviaQuestion');
+      const optionsEl = document.getElementById('triviaOptions');
+      const feedbackEl = document.getElementById('triviaFeedback');
+      const statusEl = document.getElementById('triviaStatus');
+      const nextBtn = document.getElementById('triviaNextBtn');
+      const replayBtn = document.getElementById('triviaReplayBtn');
+      const hintEl = document.getElementById('triviaPointsHint');
+
+      renderTriviaDots();
+
+      if (allTriviaDone()) {
+        questionEl.textContent = 'Trivia Complete!';
+        optionsEl.innerHTML = '<div class="center muted">Nice run. You finished all 10 questions and probably outscored at least one imaginary robot judge.</div>';
+        feedbackEl.className = 'feedback good';
+        feedbackEl.textContent = 'Hit Play Again to reset the full trivia round.';
+        statusEl.textContent = 'Finished 10 of 10';
+        nextBtn.classList.add('hidden');
+        replayBtn.classList.remove('hidden');
+        hintEl.textContent = 'Bonus math: streak × 15 after 3 in a row';
+        return;
+      }
+
+      const item = triviaQuestions[trivia.current];
+      questionEl.textContent = item.q;
+      optionsEl.innerHTML = '';
+      feedbackEl.className = 'feedback';
+      feedbackEl.textContent = 'Choose an answer to see the engineering explanation.';
+      statusEl.textContent = `Question ${trivia.current + 1} of ${triviaQuestions.length}`;
+      nextBtn.classList.add('hidden');
+      replayBtn.classList.add('hidden');
+      trivia.answered = false;
+
+      const projected = state.currentStreak >= 2 ? (state.currentStreak + 1) * 15 : 15;
+      hintEl.textContent = state.currentStreak >= 2 ? `Hot streak possible: +${projected} pts` : 'Base points: 15';
+
+      item.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = option;
+        btn.addEventListener('click', () => answerTrivia(index));
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function answerTrivia(choice) {
+      if (trivia.answered || allTriviaDone()) return;
+      trivia.answered = true;
+      const item = triviaQuestions[trivia.current];
+      const optionButtons = [...document.querySelectorAll('#triviaOptions .option-btn')];
+      const feedbackEl = document.getElementById('triviaFeedback');
+      const nextBtn = document.getElementById('triviaNextBtn');
+      const replayBtn = document.getElementById('triviaReplayBtn');
+
+      optionButtons.forEach((btn, index) => {
+        if (index === item.answer) btn.classList.add('correct');
+        else if (index === choice) btn.classList.add('wrong');
+        else btn.classList.add('dimmed');
+      });
+
+      if (choice === item.answer) {
+        const newStreak = state.currentStreak + 1;
+        setStreak(newStreak);
+        incrementCorrect();
+        const gained = newStreak >= 3 ? newStreak * 15 : 15;
+        addPoints(gained);
+        trivia.completed[trivia.current] = true;
+        feedbackEl.className = 'feedback good';
+        feedbackEl.innerHTML = `<strong>Correct! +${gained} points.</strong><br>${item.explanation}`;
+      } else {
+        setStreak(0);
+        trivia.completed[trivia.current] = true;
+        feedbackEl.className = 'feedback warn';
+        feedbackEl.innerHTML = `<strong>Not quite.</strong> ${item.explanation}`;
+      }
+
+      if (allTriviaDone()) replayBtn.classList.remove('hidden');
+      else nextBtn.classList.remove('hidden');
+      renderTriviaDots();
+    }
+
+    document.getElementById('triviaNextBtn').addEventListener('click', () => {
+      if (!allTriviaDone()) trivia.current += 1;
+      renderTrivia();
+    });
+
+    document.getElementById('triviaReplayBtn').addEventListener('click', () => {
+      trivia.current = 0;
+      trivia.answered = false;
+      trivia.completed = Array(triviaQuestions.length).fill(false);
+      renderTrivia();
+    });
+
+    // Scramble
+    const scramble = {
+      index: 0,
+      solvedCurrent: false
+    };
+
+    function shuffleWord(word) {
+      const arr = word.split('');
+      let shuffled = word;
+      while (shuffled === word) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        shuffled = arr.join('');
+      }
+      return shuffled;
+    }
+
+    function renderScrambleList() {
+      const list = document.getElementById('scrambleList');
+      list.innerHTML = '';
+      scrambleWords.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.innerHTML = `<strong>${index === scramble.index ? '▶ ' : ''}${item.word}</strong> <span>${index === scramble.index ? 'Current word' : 'In rotation'}</span>`;
+        row.style.opacity = index === scramble.index ? '1' : '0.68';
+        list.appendChild(row);
+      });
+    }
+
+    function renderScramble() {
+      const item = scrambleWords[scramble.index];
+      document.getElementById('scrambleCounter').textContent = `Word ${scramble.index + 1} of ${scrambleWords.length}`;
+      document.getElementById('scrambleHint').textContent = item.hint;
+      document.getElementById('scrambledWord').textContent = shuffleWord(item.word);
+      document.getElementById('scrambleFeedback').className = 'feedback';
+      document.getElementById('scrambleFeedback').textContent = 'Type your best guess and hit Check.';
+      document.getElementById('scrambleInput').value = '';
+      scramble.solvedCurrent = false;
+      renderScrambleList();
+    }
+
+    function nextScrambleWord() {
+      scramble.index = (scramble.index + 1) % scrambleWords.length;
+      renderScramble();
+    }
+
+    function checkScrambleAnswer() {
+      const input = document.getElementById('scrambleInput');
+      const answer = input.value.trim().toUpperCase();
+      const item = scrambleWords[scramble.index];
+      const feedback = document.getElementById('scrambleFeedback');
+      if (!answer) {
+        feedback.className = 'feedback warn';
+        feedback.textContent = 'Give it a shot first. Your keyboard believes in you.';
+        return;
+      }
+      if (answer === item.word) {
+        if (!scramble.solvedCurrent) {
+          scramble.solvedCurrent = true;
+          incrementCorrect();
+          addPoints(20);
+          state.wordsSolved += 1;
+          updateScoreboard();
+        }
+        feedback.className = 'feedback good';
+        feedback.textContent = `Correct! ${item.word} unlocked. +20 points. Auto-advancing...`;
+        setTimeout(nextScrambleWord, 700);
+      } else {
+        feedback.className = 'feedback warn';
+        feedback.textContent = 'Not yet. Keep untangling the letters and use the hint.';
+      }
+    }
+
+    document.getElementById('scrambleCheckBtn').addEventListener('click', checkScrambleAnswer);
+    document.getElementById('scrambleInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') checkScrambleAnswer();
+    });
+    document.getElementById('scrambleSkipBtn').addEventListener('click', () => {
+      document.getElementById('scrambleFeedback').className = 'feedback warn';
+      document.getElementById('scrambleFeedback').textContent = 'Skipped. No points, no shame, onward.';
+      nextScrambleWord();
+    });
+    document.getElementById('scrambleRevealBtn').addEventListener('click', () => {
+      const item = scrambleWords[scramble.index];
+      document.getElementById('scrambleFeedback').className = 'feedback';
+      document.getElementById('scrambleFeedback').textContent = `Reveal: ${item.word}`;
+    });
+    document.getElementById('scrambleNextBtn').addEventListener('click', nextScrambleWord);
+
+    // Word search
+    const wordSearch = {
+      size: 12,
+      grid: [],
+      placements: {},
+      found: new Set(),
+      pointerActive: false,
+      start: null,
+      currentCells: []
+    };
+
+    const directions = [
+      [1, 0], [-1, 0], [0, 1], [0, -1],
+      [1, 1], [1, -1], [-1, 1], [-1, -1]
+    ];
+
+    function createEmptyGrid(size) {
+      return Array.from({ length: size }, () => Array(size).fill(''));
+    }
+
+    function canPlaceWord(grid, word, row, col, dr, dc) {
+      for (let i = 0; i < word.length; i++) {
+        const r = row + dr * i;
+        const c = col + dc * i;
+        if (r < 0 || c < 0 || r >= wordSearch.size || c >= wordSearch.size) return false;
+        const existing = grid[r][c];
+        if (existing && existing !== word[i]) return false;
+      }
+      return true;
+    }
+
+    function placeWord(grid, word, row, col, dr, dc) {
+      const cells = [];
+      for (let i = 0; i < word.length; i++) {
+        const r = row + dr * i;
+        const c = col + dc * i;
+        grid[r][c] = word[i];
+        cells.push(`${r}-${c}`);
+      }
+      return cells;
+    }
+
+    function generateWordSearch() {
+      wordSearch.grid = createEmptyGrid(wordSearch.size);
+      wordSearch.placements = {};
+      wordSearch.found = new Set();
+      wordSearch.currentCells = [];
+      wordSearch.start = null;
+
+      const words = [...wordSearchWords].sort((a, b) => b.length - a.length);
+
+      words.forEach(word => {
+        let placed = false;
+        let attempts = 0;
+        while (!placed && attempts < 400) {
+          attempts++;
+          const [dr, dc] = directions[Math.floor(Math.random() * directions.length)];
+          const row = Math.floor(Math.random() * wordSearch.size);
+          const col = Math.floor(Math.random() * wordSearch.size);
+          if (canPlaceWord(wordSearch.grid, word, row, col, dr, dc)) {
+            wordSearch.placements[word] = placeWord(wordSearch.grid, word, row, col, dr, dc);
+            placed = true;
+          }
+        }
+      });
+
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      for (let r = 0; r < wordSearch.size; r++) {
+        for (let c = 0; c < wordSearch.size; c++) {
+          if (!wordSearch.grid[r][c]) {
+            wordSearch.grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+          }
+        }
+      }
+      renderWordSearch();
+    }
+
+    function renderWordSearch() {
+      const gridEl = document.getElementById('wordGrid');
+      const listEl = document.getElementById('wordList');
+      const countEl = document.getElementById('wordsearchFoundCount');
+      gridEl.innerHTML = '';
+      listEl.innerHTML = '';
+
+      for (let r = 0; r < wordSearch.size; r++) {
+        for (let c = 0; c < wordSearch.size; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'grid-cell';
+          cell.textContent = wordSearch.grid[r][c];
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+          cell.dataset.key = `${r}-${c}`;
+          if ([...wordSearch.found].some(word => wordSearch.placements[word]?.includes(`${r}-${c}`))) {
+            cell.classList.add('found');
+          }
+          gridEl.appendChild(cell);
+        }
+      }
+
+      wordSearchWords.forEach(word => {
+        const pill = document.createElement('div');
+        pill.className = `word-pill ${wordSearch.found.has(word) ? 'done' : ''}`;
+        pill.textContent = word;
+        listEl.appendChild(pill);
+      });
+      countEl.textContent = `Found ${wordSearch.found.size} of ${wordSearchWords.length}`;
+    }
+
+    function getCellFromPoint(clientX, clientY) {
+      const el = document.elementFromPoint(clientX, clientY);
+      return el?.classList?.contains('grid-cell') ? el : null;
+    }
+
+    function cellsBetween(start, end) {
+      const dr = end.r - start.r;
+      const dc = end.c - start.c;
+      const stepR = dr === 0 ? 0 : dr / Math.abs(dr);
+      const stepC = dc === 0 ? 0 : dc / Math.abs(dc);
+      const straight = dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc);
+      if (!straight) return [];
+      const length = Math.max(Math.abs(dr), Math.abs(dc)) + 1;
+      const cells = [];
+      for (let i = 0; i < length; i++) {
+        cells.push({ r: start.r + stepR * i, c: start.c + stepC * i, key: `${start.r + stepR * i}-${start.c + stepC * i}` });
+      }
+      return cells;
+    }
+
+    function clearPreview() {
+      document.querySelectorAll('.grid-cell.preview').forEach(cell => cell.classList.remove('preview'));
+    }
+
+    function showPreview(cells) {
+      clearPreview();
+      cells.forEach(cell => {
+        const el = document.querySelector(`.grid-cell[data-key="${cell.key}"]`);
+        if (el && !el.classList.contains('found')) el.classList.add('preview');
+      });
+    }
+
+    function evaluateSelection(cells) {
+      if (!cells.length) return;
+      const selection = cells.map(cell => wordSearch.grid[cell.r][cell.c]).join('');
+      const reversed = selection.split('').reverse().join('');
+      let matchedWord = null;
+      for (const word of wordSearchWords) {
+        if (!wordSearch.found.has(word) && (selection === word || reversed === word)) {
+          const keys = cells.map(c => c.key);
+          const target = wordSearch.placements[word];
+          const reversedTarget = [...target].reverse();
+          if (JSON.stringify(keys) === JSON.stringify(target) || JSON.stringify(keys) === JSON.stringify(reversedTarget)) {
+            matchedWord = word;
+            break;
+          }
+        }
+      }
+
+      const feedback = document.getElementById('wordsearchFeedback');
+      if (matchedWord) {
+        wordSearch.found.add(matchedWord);
+        addPoints(15);
+        state.wordsSolved += 1;
+        updateScoreboard();
+        feedback.className = 'feedback good';
+        feedback.textContent = `Found ${matchedWord}! +15 points.`;
+        renderWordSearch();
+      } else {
+        feedback.className = 'feedback';
+        feedback.textContent = 'That path did not lock onto a target word. Try another angle.';
+      }
+      clearPreview();
+      if (wordSearch.found.size === wordSearchWords.length) {
+        feedback.className = 'feedback good';
+        feedback.textContent = 'Puzzle complete! Hit New Puzzle for another round.';
+      }
+    }
+
+    const gridWrap = document.getElementById('gridWrap');
+    gridWrap.addEventListener('pointerdown', (e) => {
+      const cell = getCellFromPoint(e.clientX, e.clientY);
+      if (!cell) return;
+      wordSearch.pointerActive = true;
+      gridWrap.setPointerCapture?.(e.pointerId);
+      wordSearch.start = { r: Number(cell.dataset.row), c: Number(cell.dataset.col) };
+      wordSearch.currentCells = [{ ...wordSearch.start, key: cell.dataset.key }];
+      showPreview(wordSearch.currentCells);
+    });
+
+    gridWrap.addEventListener('pointermove', (e) => {
+      if (!wordSearch.pointerActive || !wordSearch.start) return;
+      const cell = getCellFromPoint(e.clientX, e.clientY);
+      if (!cell) return;
+      const end = { r: Number(cell.dataset.row), c: Number(cell.dataset.col) };
+      const cells = cellsBetween(wordSearch.start, end);
+      if (!cells.length) return;
+      wordSearch.currentCells = cells;
+      showPreview(cells);
+    });
+
+    function endWordPointer(e) {
+      if (!wordSearch.pointerActive) return;
+      wordSearch.pointerActive = false;
+      evaluateSelection(wordSearch.currentCells);
+      wordSearch.currentCells = [];
+      wordSearch.start = null;
+      try { gridWrap.releasePointerCapture?.(e.pointerId); } catch (err) {}
+    }
+
+    gridWrap.addEventListener('pointerup', endWordPointer);
+    gridWrap.addEventListener('pointercancel', endWordPointer);
+    document.getElementById('newPuzzleBtn').addEventListener('click', generateWordSearch);
+
+    // Memory
+    const memory = {
+      deck: [],
+      flipped: [],
+      lock: false,
+      moves: 0,
+      matchedPairs: 0,
+      completed: false
+    };
+
+    function buildMemoryDeck() {
+      const deck = [];
+      memoryPairs.forEach((pair, pairIndex) => {
+        deck.push({ id: `${pairIndex}-term`, pairId: pairIndex, kind: 'term', title: pair[0], text: pair[0] });
+        deck.push({ id: `${pairIndex}-def`, pairId: pairIndex, kind: 'definition', title: pair[0], text: pair[1] });
+      });
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck;
+    }
+
+    function resetMemory() {
+      memory.deck = buildMemoryDeck();
+      memory.flipped = [];
+      memory.lock = false;
+      memory.moves = 0;
+      memory.matchedPairs = 0;
+      memory.completed = false;
+      state.memoryBonusAwarded = false;
+      renderMemory();
+    }
+
+    function renderMemory() {
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+      document.getElementById('memoryMoves').textContent = `Moves: ${memory.moves}`;
+      document.getElementById('memoryMatched').textContent = `Matched Pairs: ${memory.matchedPairs} / ${memoryPairs.length}`;
+
+      memory.deck.forEach(card => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'memory-card';
+        if (card.flipped) cardEl.classList.add('flipped');
+        if (card.matched) cardEl.classList.add('matched');
+        cardEl.innerHTML = `
+          <div class="memory-inner">
+            <div class="memory-face memory-front">?</div>
+            <div class="memory-face memory-back">
+              <strong>${card.kind === 'term' ? card.text : card.title}</strong>
+              <div>${card.kind === 'term' ? 'STEM Term' : card.text}</div>
+            </div>
+          </div>
+        `;
+        cardEl.addEventListener('click', () => flipMemoryCard(card.id));
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(id) {
+      if (memory.lock) return;
+      const card = memory.deck.find(c => c.id === id);
+      if (!card || card.flipped || card.matched) return;
+      card.flipped = true;
+      memory.flipped.push(card);
+      renderMemory();
+      if (memory.flipped.length === 2) {
+        memory.moves += 1;
+        memory.lock = true;
+        const [a, b] = memory.flipped;
+        const isMatch = a.pairId === b.pairId && a.kind !== b.kind;
+        if (isMatch) {
+          a.matched = true;
+          b.matched = true;
+          memory.flipped = [];
+          memory.matchedPairs += 1;
+          addPoints(25);
+          incrementCorrect();
+          memory.lock = false;
+          if (memory.matchedPairs === memoryPairs.length && !state.memoryBonusAwarded) {
+            addPoints(50);
+            state.memoryBonusAwarded = true;
+            memory.completed = true;
+          }
+          renderMemory();
+        } else {
+          setTimeout(() => {
+            a.flipped = false;
+            b.flipped = false;
+            memory.flipped = [];
+            memory.lock = false;
+            renderMemory();
+          }, 900);
+        }
+        renderMemory();
+      }
+    }
+
+    document.getElementById('memoryRestartBtn').addEventListener('click', resetMemory);
+
+    // Design lab
+    const lab = {
+      index: 0,
+      answered: false,
+      done: false
+    };
+
+    function renderLab() {
+      const step = designLabSteps[lab.index];
+      const optionsEl = document.getElementById('labOptions');
+      const feedbackEl = document.getElementById('labFeedback');
+      const nextBtn = document.getElementById('labNextBtn');
+      const replayBtn = document.getElementById('labReplayBtn');
+      const fill = document.getElementById('labProgressFill');
+
+      document.getElementById('labStepLabel').textContent = lab.done ? 'Completed 6 of 6' : `Step ${lab.index + 1} of ${designLabSteps.length}`;
+      document.getElementById('labStepName').textContent = lab.done ? 'Mission Complete' : step.step;
+      fill.style.width = `${lab.done ? 100 : (lab.index / designLabSteps.length) * 100}%`;
+
+      if (lab.done) {
+        document.getElementById('labQuestion').textContent = 'Design Lab complete!';
+        optionsEl.innerHTML = '<div class="center muted">You walked the full Engineering Design Process from problem to communication. That is more organized than half the adults in a planning meeting. Respect.</div>';
+        feedbackEl.className = 'feedback good';
+        feedbackEl.textContent = 'Hit Run It Again to restart the scenario.';
+        nextBtn.classList.add('hidden');
+        replayBtn.classList.remove('hidden');
+        return;
+      }
+
+      document.getElementById('labQuestion').textContent = step.question;
+      optionsEl.innerHTML = '';
+      feedbackEl.className = 'feedback';
+      feedbackEl.textContent = 'Pick the most engineer-minded next move.';
+      nextBtn.classList.add('hidden');
+      replayBtn.classList.add('hidden');
+      lab.answered = false;
+
+      step.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = option;
+        btn.addEventListener('click', () => answerLab(index));
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function answerLab(choice) {
+      if (lab.answered || lab.done) return;
+      lab.answered = true;
+      const step = designLabSteps[lab.index];
+      const buttons = [...document.querySelectorAll('#labOptions .option-btn')];
+      const feedbackEl = document.getElementById('labFeedback');
+
+      buttons.forEach((btn, index) => {
+        if (index === step.answer) btn.classList.add('correct');
+        else if (index === choice) btn.classList.add('wrong');
+        else btn.classList.add('dimmed');
+      });
+
+      if (choice === step.answer) {
+        addPoints(20);
+        incrementCorrect();
+        feedbackEl.className = 'feedback good';
+        feedbackEl.innerHTML = `<strong>Best engineering move. +20 points.</strong><br>${step.explanation}`;
+      } else {
+        feedbackEl.className = 'feedback warn';
+        feedbackEl.innerHTML = `<strong>Not the strongest choice.</strong><br>${step.explanation}`;
+      }
+
+      if (lab.index === designLabSteps.length - 1) {
+        lab.done = true;
+        document.getElementById('labReplayBtn').classList.remove('hidden');
+      } else {
+        document.getElementById('labNextBtn').classList.remove('hidden');
+      }
+      document.getElementById('labProgressFill').style.width = `${((lab.index + 1) / designLabSteps.length) * 100}%`;
+    }
+
+    document.getElementById('labNextBtn').addEventListener('click', () => {
+      lab.index += 1;
+      renderLab();
+    });
+
+    document.getElementById('labReplayBtn').addEventListener('click', () => {
+      lab.index = 0;
+      lab.done = false;
+      lab.answered = false;
+      renderLab();
+    });
+
+    // Challenges
+    function renderChallenges() {
+      const grid = document.getElementById('challengeGrid');
+      grid.innerHTML = '';
+      challenges.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'challenge-card';
+        card.style.borderLeftColor = item.color;
+        card.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.prompt}</p>
+          <button class="btn btn-secondary" data-insight-index="${index}">Reveal Insight</button>
+          <div class="insight" id="insight-${index}">${item.insight}</div>
+        `;
+        grid.appendChild(card);
+      });
+
+      grid.querySelectorAll('button[data-insight-index]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.dataset.insightIndex;
+          const insight = document.getElementById(`insight-${idx}`);
+          const firstReveal = !state.revealedInsights.has(idx);
+          insight.classList.toggle('show');
+          if (firstReveal) {
+            state.revealedInsights.add(idx);
+            addPoints(5);
+          }
+          btn.textContent = insight.classList.contains('show') ? 'Hide Insight' : 'Reveal Insight';
+        });
+      });
+    }
+
+    function startMission(nameValue) {
+      const safeName = (nameValue || '').trim() || 'Anonymous Builder';
+      document.getElementById('playerNameInput').value = safeName;
+      document.getElementById('launchNameInput').value = safeName === 'Anonymous Builder' ? '' : safeName;
+      document.getElementById('launchOverlay').style.display = 'none';
+      document.body.classList.remove('prelaunch');
+      resetSessionState();
+      startTimer();
+    }
+
+    document.getElementById('launchStartBtn').addEventListener('click', () => {
+      startMission(document.getElementById('launchNameInput').value);
+    });
+
+    document.getElementById('launchQuickBtn').addEventListener('click', () => {
+      startMission('Anonymous Builder');
+    });
+
+    document.getElementById('launchNameInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') startMission(document.getElementById('launchNameInput').value);
+    });
+
+    document.getElementById('playerNameInput').addEventListener('input', (e) => {
+      document.getElementById('launchNameInput').value = e.target.value;
+    });
+
+    // Init
+    renderTrivia();
+    renderScramble();
+    generateWordSearch();
+    resetMemory();
+    renderLab();
+    renderChallenges();
+    updateTimerDisplay();
+    updateScoreboard();
+    renderLeaderboard();
+  </script>
+</body>
+</html>
