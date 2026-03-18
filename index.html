@@ -1195,6 +1195,7 @@
   </main>
 
  <script>
+  document.addEventListener('DOMContentLoaded', () => {
   const SUPABASE_URL = 'https://ajlqrfvscuufjvavlclw.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_1AJOvos68ZhkEEEdZk68nA_D9SWIhne';
   const EVENT_CODE = 'ECOFACTORY_2026';
@@ -2484,6 +2485,7 @@
   updateLeaderboardCount();
   loadLeaderboard('points');
   subscribeToLeaderboard();
-</script>
+  });
+ </script>
 </body>
 </html>
