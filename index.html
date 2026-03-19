@@ -1178,7 +1178,6 @@
               <h3 class="panel-title" style="font-size:1.3rem;">Session Leaderboard</h3>
               <p class="panel-sub">This stays live while the page is open. Save each player or team when they finish.</p>
             </div>
-            <button class="btn btn-secondary" id="clearLeaderboardBtn">Clear Leaderboard</button>
           </div>
           <div class="mini-row" style="margin: 10px 0 14px;">
   <button class="btn btn-secondary leaderboard-filter active-filter" data-board="points">Top Points</button>
@@ -1772,24 +1771,7 @@
   document.getElementById('timerResetBtn').addEventListener('click', resetTimer);
   document.getElementById('saveScoreBtn').addEventListener('click', saveToLeaderboard);
 
-  document.getElementById('clearLeaderboardBtn').addEventListener('click', async () => {
-    const confirmed = confirm('Clear the leaderboard for this event?');
-    if (!confirmed) return;
 
-    const { error } = await supabaseClient
-      .from('leaderboard_entries')
-      .delete()
-      .eq('event_code', EVENT_CODE);
-
-    if (error) {
-      console.error('Clear failed:', error);
-      alert('Could not clear leaderboard.');
-      return;
-    }
-
-    await updateLeaderboardCount();
-    await loadLeaderboard(state.leaderboardCategory);
-  });
 
   document.getElementById('newPlayerBtn').addEventListener('click', () => {
     pauseTimer();
